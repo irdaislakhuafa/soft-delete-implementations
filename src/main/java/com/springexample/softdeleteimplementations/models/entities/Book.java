@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +19,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "update books set deleted = true where id=?") // this syntax will execute when data from this table is
+                                                               // deleted
+@Where(clause = "deleted = false") // this syntax will always execute when this data is showing
 public class Book {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -28,4 +33,6 @@ public class Book {
 
     @Column(nullable = false)
     private double price;
+
+    private boolean deleted = Boolean.FALSE; // default value is false
 }
