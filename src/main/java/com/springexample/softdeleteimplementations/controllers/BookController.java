@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,11 +24,12 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAll(@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean bool) {
         try {
-            return ResponseEntity.ok(new ResponseAPI(HttpStatus.OK, "Success", bookService.findAll()));
+            return ResponseEntity.ok(new ResponseAPI(HttpStatus.OK, "Success", bookService.findAll(bool)));
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
             return new ResponseEntity<>(
                     new ResponseAPI(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to get all books", null),
                     HttpStatus.INTERNAL_SERVER_ERROR);

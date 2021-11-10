@@ -11,7 +11,6 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
