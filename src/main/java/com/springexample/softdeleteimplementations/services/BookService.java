@@ -28,4 +28,11 @@ public class BookService {
     public Book findById(String id) {
         return bookRepository.findById(id).get();
     }
+
+    public List<Book> findAll(boolean bool){
+        return bookRepository.findAllByDeleted(bool);
+    }
+    public Book findByIdByDeleted(String id) {
+        return bookRepository.findById(id).get();
+    }
 }

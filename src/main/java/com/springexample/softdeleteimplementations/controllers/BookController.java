@@ -5,6 +5,7 @@ import com.springexample.softdeleteimplementations.models.entities.Book;
 import com.springexample.softdeleteimplementations.services.BookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,9 +25,9 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAll(@RequestParam(value = "isDeleted", required = false, defaultValue = "false") boolean bool) {
         try {
-            return ResponseEntity.ok(new ResponseAPI(HttpStatus.OK, "Success", bookService.findAll()));
+            return ResponseEntity.ok(new ResponseAPI(HttpStatus.OK, "Success", bookService.findAll(bool)));
         } catch (Exception e) {
             // TODO: handle exception
             return new ResponseEntity<>(
@@ -49,10 +51,11 @@ public class BookController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
         try {
-            Book book = bookService.findById(id);
+            Book book = bookService.findByIdByDeleted(id);
             bookService.removeById(id);
-            return ResponseEntity.ok(new ResponseAPI(HttpStatus.OK, "Success", book));
+            return (book.isDeleted()) ? new ResponseEntity<>(new ResponseAPI(HttpStatus.NOT_FOUND, "Data with ID : " + id + " not found!", null), HttpStatus.NOT_FOUND) : ResponseEntity.ok(new ResponseAPI(HttpStatus.OK, "Success", book));
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(
                     new ResponseAPI(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to remove data with ID : " + id, null),
                     HttpStatus.INTERNAL_SERVER_ERROR);

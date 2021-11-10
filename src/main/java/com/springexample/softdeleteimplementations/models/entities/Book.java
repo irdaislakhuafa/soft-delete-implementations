@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "update books set deleted = true where id=?") // this syntax will execute when data from this table is
-                                                               // deleted
-@Where(clause = "deleted = false") // this syntax will always execute when this data is showing
+// this syntax will execute when data from this table is deleted
+@SQLDelete(sql = "update books set deleted = true where id=?") 
+// @Where(clause = "deleted = false") // this syntax will always execute when this data is showing
 public class Book {
     @Id
     @GeneratedValue(generator = "uuid")
