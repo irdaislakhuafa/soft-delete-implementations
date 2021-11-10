@@ -6,7 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -19,9 +22,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "update books set deleted = true where id=?") // this syntax will execute when data from this table is
-                                                               // deleted
-@Where(clause = "deleted = false") // this syntax will always execute when this data is showing
+// this syntax will execute when data from this table is deleted
+@SQLDelete(sql = "update books set deleted = true where id=?") 
+// @Where(clause = "deleted = false") // this syntax will always execute when this data is showing
+@FilterDef(name = "statusDeleted", parameters = @ParamDef(name = "isDeleted", type = "boolean")) // definition a FilterDef parameters
+@Filter(name = "statusDeleted", condition = "deleted = :isDeleted")
 public class Book {
     @Id
     @GeneratedValue(generator = "uuid")
